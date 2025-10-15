@@ -7,3 +7,5 @@
 - Shift+^ -> upindexes
 - Numbers -> indexes
 - Backspace undo
+## Example
+[Video](https://wipedlifepotato.github.io/assets/output_720.mp4)
