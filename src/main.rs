@@ -9,7 +9,7 @@ struct Element {
     rotations: f32,
     val: String,
 }
-// KeyCode, Formula
+
 macro_rules! BindKey {
     ($key_code:expr, $formula:expr, $current:expr, $turn:expr) => {
         if is_key_pressed($key_code) {
@@ -19,7 +19,28 @@ macro_rules! BindKey {
         }        
     }   
 }
+use svg::node::element::{Text, Rectangle, Line};
+use svg::Document;
 
+fn export_to_svg(elements: &[Element], filename: &str) {
+    let mut doc = Document::new()
+        .set("viewBox", (0, 0, 800, 600))
+        .set("width", 800)
+        .set("height", 600);
+
+    for el in elements {
+        let text = Text::new(el.val.clone())
+            .set("x", el.x)
+            .set("y", el.y)
+            .set("fill", "black")
+            .set("font-size", 40)
+            .set("transform", format!("rotate({},{},{})", el.rotations, el.x, el.y));
+
+        doc = doc.add(text);
+    }
+
+    svg::save(filename, &doc).expect("Cannot save SVG file");
+}
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut formulas = Vec::<Element>::new();
@@ -101,7 +122,10 @@ async fn main() {
         }
         //let w = screen_width();
         //
-
+        if is_key_pressed(KeyCode::S) {
+            export_to_svg(&formulas, "output.svg");
+            println!("Saved SVG!");
+        }
 
 
         next_frame().await
